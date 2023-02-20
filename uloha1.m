@@ -2,7 +2,7 @@ clear;
 clc;
 close all;
 
-MAX_ITERATIONS = 50;
+MAX_ITERATIONS = 5;
 MAX_GENERATIONS = 300;
 POPULATION_SIZE = 100;
 NUM_OF_GENES = 10;
@@ -48,7 +48,7 @@ for iteration = 1:MAX_ITERATIONS
         valuesPerGenerations(generation) = minValue;
     end % generations
     plot(valuesPerGenerations, 'b');
-    fprintf("%d. iteration: %4.4f\n\tPOPULATION_SIZE:", iteration, valuesPerGenerations(MAX_GENERATIONS-1));
+    fprintf("%2d. Iteration: %4.4f\n\tPopulation:", iteration, valuesPerGenerations(MAX_GENERATIONS-1));
     disp(pop(minIndex,:));
 end % iterations
 

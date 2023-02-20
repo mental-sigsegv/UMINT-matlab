@@ -6,49 +6,59 @@ points = [0,0; 77,68; 12,75; 32,17; 51,64; 20,19; 72,87; 80,37; 35,82;
 2,15; 18,90; 33,50; 85,52; 97,27; 37,67; 20,82; 49,0; 62,14; 7,60;
 100,100];
 
-chromozonePermutePart = 2:19;
+chromosomePermutePart = 2:19;
 
-SWAP_RATE = 0.6;
+SWAP_RATE = 0.259;
 
-% chromozonePermutePart = chromozonePermutePart(randperm(length(chromozonePermutePart)));
-% TESTING_CH = [1, chromozonePermutePart, 20]
-% chromozonePermutePart = swapgen(chromozonePermutePart, SWAP_RATE);
-% TESTING_CH2 = [1, chromozonePermutePart, 20]
+% chromosomePermutePart = chromosomePermutePart(randperm(length(chromosomePermutePart)));
+% TESTING_CH = [1, chromosomePermutePart, 20]
+% chromosomePermutePart = swapgen(chromosomePermutePart, SWAP_RATE);
+% TESTING_CH2 = [1, chromosomePermutePart, 20]
 
 % return;
 
 drawPoints(points);
 drawNumbers(points);
 
-MAX_GENERATIONS = 1;
-POPULATION_SIZE = 10;
-chromozome = zeros(POPULATION_SIZE, 20);
+MAX_GENERATIONS = 100;
+POPULATION_SIZE = 200;
+chromosomeMiddleParts = zeros(POPULATION_SIZE, 18);
 
 for i = 1:POPULATION_SIZE
-    chromozome(i,:) = [1, chromozonePermutePart(randperm(length(chromozonePermutePart))), 20];
+    chromosomeMiddleParts(i,:) = [chromosomePermutePart(randperm(length(chromosomePermutePart)))];
 end
 
-% chromozome
+
+% 
+% chromosomeMiddleParts
+% crossov(chromosomeMiddleParts, fitnessPop(points, chromosomeMiddleParts), 0)
+% return;
+
+% chromosome
 % T_POINTS = [0,0; 0,5; 5,5; 10,10;];
 % fitnessPop(T_POINTS, [[1,2,3,4]; [1,4,2,4]])
 
-return;
 
 for iteration = 1:MAX_GENERATIONS
-    
-    ch1 = [1, chromozonePermutePart, 20];
-    points = getNewpoints(points, ch1);
-    drawLine(points);
-    chromozonePermutePart = chromozonePermutePart(randperm(length(chromozonePermutePart)));
-    pause(0.5);
+    fitness = fitnessPop(points, chromosomeMiddleParts);
+    theBest = selbest(chromosomeMiddleParts, fitness, 1);
+    fprintf("iteration %d. \n\tvalue: %.2f\n", iteration, fitnessPop(points, theBest));
+    drawLineCH(points, theBest);
+     pause(0.1);
+a = selbest(chromosomeMiddleParts, fitness, [3 3 3 2 2 1 1 1 1]);
+b = swapgen(selbest(chromosomeMiddleParts, fitness, ones(1, 10) * 2), SWAP_RATE);
+c = swapgen(selrand(chromosomeMiddleParts, fitness, ones(1, 10)), SWAP_RATE);
+d = swapgen(seltourn(chromosomeMiddleParts, fitness, POPULATION_SIZE-size(a)-size(b)-size(c)), SWAP_RATE);
+
+chromosomeMiddleParts(:) = [a; b; c; d];
 end
 
-function [array] = getNewpoints(points, chromozone)
+function [array] = getNewpoints(points, chromosome)
     array = zeros(20, 2);
 
-    for i = 1:length(chromozone)
-        array(i, 1) = points(chromozone(i), 1);
-        array(i, 2) = points(chromozone(i), 2);
+    for i = 1:length(chromosome)
+        array(i, 1) = points(chromosome(i), 1);
+        array(i, 2) = points(chromosome(i), 2);
     end  
 end
 
@@ -69,6 +79,34 @@ function [] = drawPoints(points)
     
 end
 
+
+function [] = drawLineCH(points, chromosome)
+
+    persistent line;
+        if ~isempty(line)
+            delete(line);
+        end
+
+    pointsX = 1:20;
+    pointsY = 1:20;
+    
+    pointsX(1) = 0;
+    pointsX(20) = 100;
+    pointsY(1) = 0;
+    pointsY(20) = 100;
+
+
+    for i = 2:length(chromosome)+1
+        pointsX(i) = points(chromosome(i-1),1);
+        pointsY(i) = points(chromosome(i-1),2);
+    end
+
+    hold on;
+    line = plot(pointsX, pointsY, 'r');
+    hold off;
+end
+
+
 function [] = drawNumbers(points)
     pointsX = points(:,1);
     pointsY = points(:,2);
@@ -86,6 +124,8 @@ function [Fit] = fitnessPop(population, chromozene)
         for j = 1:geneSize - 1
             Fit(i) = Fit(i) + getLenghtAB(population(chromozene(i,j),:), population(chromozene(i,j+1),:));    
         end
+        Fit(i) = Fit(i) + getLenghtAB([0,0], population(chromozene(i,1),:));
+        Fit(i) = Fit(i) + getLenghtAB(population(chromozene(i,18),:), [100, 100]);
     end
 end
 
