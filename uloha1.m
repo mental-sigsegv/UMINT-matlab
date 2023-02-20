@@ -2,53 +2,54 @@ clear;
 clc;
 close all;
 
-max_iterations = 50;
-max_generations = 300;
-population = 100;
-dimensions = 10;
-rate = 0.4;
-amps = 10.0 * ones(1, dimensions);
-space = ones(2, dimensions).*[-500; 500];
-graph_values = 1:max_generations;
+MAX_ITERATIONS = 50;
+MAX_GENERATIONS = 300;
+POPULATION_SIZE = 100;
+NUM_OF_GENES = 10;
+MUTATION_RATE = 0.4;
+AMPS = 10.0 * ones(1, NUM_OF_GENES);
+SPACE = ones(2, NUM_OF_GENES).*[-500; 500];
+
+valuesPerGenerations = 1:MAX_GENERATIONS;
 
 figure(1);
 xlabel('generation');
 ylabel('f(x_i)');
-title_str = sprintf('evolution graph (%d dimensions)', dimensions);
+title_str = sprintf('evolution graph (%d NUM_OF_GENES)', NUM_OF_GENES);
 title(title_str);
 
-axis([-1 max_generations+1 -(dimensions+1)*420 -500]);
+axis([-1 MAX_GENERATIONS+1 -(NUM_OF_GENES+1)*420 -500]);
 
-% axis([max_generations-0.001 max_generations -(dimensions)*418.99 -(dimensions)*418.97]); % zoom in
+% axis([MAX_GENERATIONS-0.001 MAX_GENERATIONS -(NUM_OF_GENES)*418.99 -(NUM_OF_GENES)*418.97]); % zoom in
 
 grid on;
 hold on;
 
-for iteration = 1:max_iterations
-    pop = genrpop(population, space);
-    color = rand(1, 3);
+for iteration = 1:MAX_ITERATIONS
+    pop = genrpop(POPULATION_SIZE, SPACE);
+    % color = rand(1, 3);  % for random colors
 
-    for generation = 1:max_generations
-        fitness_values = schwefel(pop);
-        pop_parents = selbest(pop, fitness_values, [2 2 2 1 1 1]*floor(population/50));
-        %pop_child = crossov(pop_parents, 2, 0);
-        pop_child = crosgrp(pop_parents, floor(population/5));
-        pop_child_mutated = muta(pop_child, rate, amps, space);
+    for generation = 1:MAX_GENERATIONS
+        fitnessValues = schwefel(pop);
+        popParents = selbest(pop, fitnessValues, [2 2 2 1 1 1]*floor(POPULATION_SIZE/50));
+        %popChild = crossov(popParents, 2, 0);
+        popChild = crosgrp(popParents, floor(POPULATION_SIZE/5));
+        popChildMutated = muta(popChild, MUTATION_RATE, AMPS, SPACE);
     
-        pop_selsus = selsus(pop, fitness_values, floor(population/10));
+        popSelsus = selsus(pop, fitnessValues, floor(POPULATION_SIZE/10));
 
-        pop_random = selrand(pop, fitness_values, floor(population/10));
+        popRandom = selrand(pop, fitnessValues, floor(POPULATION_SIZE/10));
 
-        pop_seltourn = seltourn(pop, fitness_values, population-size(pop_parents)-size(pop_child_mutated)-size(pop_random)-size(pop_selsus));
-        pop_seltourn(:) = mutx(pop_seltourn, rate, space);
+        popSeltourn = seltourn(pop, fitnessValues, POPULATION_SIZE-size(popParents)-size(popChildMutated)-size(popRandom)-size(popSelsus));
+        popSeltourn(:) = mutx(popSeltourn, MUTATION_RATE, SPACE);
     
-        pop(:) = [pop_parents; pop_child_mutated; pop_selsus; pop_random; pop_seltourn];
-        [min_val, min_idx] = min(fitness_values);
-        graph_values(generation) = min_val;
+        pop(:) = [popParents; popChildMutated; popSelsus; popRandom; popSeltourn];
+        [minValue, minIndex] = min(fitnessValues);
+        valuesPerGenerations(generation) = minValue;
     end % generations
-    plot(graph_values, 'b');
-    fprintf("%d. iteration: %4.4f\n\tPopulation:", iteration, graph_values(max_generations-1));
-    disp(pop(min_idx,:));
+    plot(valuesPerGenerations, 'b');
+    fprintf("%d. iteration: %4.4f\n\tPOPULATION_SIZE:", iteration, valuesPerGenerations(MAX_GENERATIONS-1));
+    disp(pop(minIndex,:));
 end % iterations
 
 hold off;

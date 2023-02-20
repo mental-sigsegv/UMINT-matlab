@@ -28,12 +28,8 @@ for i = 1:POPULATION_SIZE
     chromozome(i,:) = [1, chromozonePermutePart(randperm(length(chromozonePermutePart))), 20];
 end
 
-% chromozome
-% T_POINTS = [0,0; 0,5; 5,5; 10,10;];
-% fitnessPop(T_POINTS, [[1,2,3,4]; [1,4,2,4]])
-
-return;
-
+T_POINTS = [[0,0; 0,5; 5,5; 10,10]; [0,0; 0,5; 5,5; 10,10]]k
+fitnessPop(T_POINTS)
 for iteration = 1:MAX_GENERATIONS
     
     ch1 = [1, chromozonePermutePart, 20];
