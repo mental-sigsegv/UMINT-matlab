@@ -13,6 +13,8 @@ random_x = x(randi(length(x), 1));
 %  random_x = 6;
 
 draw_plot_0(x);
+xlabel('x');
+ylabel('f(x_i)');
 find_minimum_0(random_x, search_delta);
 
 function [] = find_minimum_0(x_current, d)

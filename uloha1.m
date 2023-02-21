@@ -15,7 +15,7 @@ valuesPerGenerations = 1:MAX_GENERATIONS;
 figure(1);
 xlabel('generation');
 ylabel('f(x_i)');
-title_str = sprintf('evolution graph (%d NUM_OF_GENES)', NUM_OF_GENES);
+title_str = sprintf('evolution graph (%d number of genes)', NUM_OF_GENES);
 title(title_str);
 
 axis([-1 MAX_GENERATIONS+1 -(NUM_OF_GENES+1)*420 -500]);

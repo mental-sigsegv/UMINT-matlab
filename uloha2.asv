@@ -20,7 +20,6 @@ SWAP_RATE = 0.15;
 drawPoints(points);
 drawNumbers(points);
 
-MAX_ITERATIONS = 50;
 MAX_GENERATIONS = 300;
 POPULATION_SIZE = 150;
 chromosomeMiddleParts = zeros(POPULATION_SIZE, 18);
@@ -40,32 +39,28 @@ end
 % fitnessPop(T_POINTS, [[1,2,3,4]; [1,4,2,4]])
 
 for iteration = 1:MAX_ITERATIONS
-    chromosomeMiddleParts = zeros(POPULATION_SIZE, 18);
-    for i = 1:POPULATION_SIZE
-        chromosomeMiddleParts(i,:) = [chromosomePermutePart(randperm(length(chromosomePermutePart)))];
+   
+
+for generation = 1:MAX_GENERATIONS
+    fitness = fitnessPop(points, chromosomeMiddleParts);
+    theBest = selbest(chromosomeMiddleParts, fitness, 1);
+    fprintf("generation %d. \n\tvalue: %.2f\n", generation, fitnessPop(points, theBest));
+    drawLineCH(points, theBest);
+%      pause(0.1);
+    a = selbest(chromosomeMiddleParts, fitness, [3 3 3 2 2 1 1 1 1]);
+    b = swapgen(selbest(chromosomeMiddleParts, fitness, ones(1, 10) * 2), SWAP_RATE);
+    b(:) = swapgen(crosord(b, 0), SWAP_RATE);
+    
+    c = swapgen(selrand(chromosomeMiddleParts, fitness, ones(1, 10)), SWAP_RATE);
+    c(:) = swapgen(crosord(c, 0), SWAP_RATE);
+    e = a(1:5,:);
+    for i = 1:5
+        e(i,:) = [a(i,1:9), a(i,10:18)];
     end
-    for generation = 1:MAX_GENERATIONS
-        fitness = fitnessPop(points, chromosomeMiddleParts);
-        theBest = selbest(chromosomeMiddleParts, fitness, 1);
-        
-        drawLineCH(points, theBest);
-    %      pause(0.1);
-        a = selbest(chromosomeMiddleParts, fitness, [3 3 3 2 2 1 1 1 1]);
-        b = swapgen(selbest(chromosomeMiddleParts, fitness, ones(1, 10) * 2), SWAP_RATE);
-        b(:) = swapgen(crosord(b, 0), SWAP_RATE);
-        
-        c = swapgen(selrand(chromosomeMiddleParts, fitness, ones(1, 10)), SWAP_RATE);
-        c(:) = swapgen(crosord(c, 0), SWAP_RATE);
-        e = a(1:5,:);
-        for i = 1:5
-            e(i,:) = [a(i,1:9), a(i,10:18)];
-        end
-        e(:) = crosord(e, 0);
-        d = swapgen(seltourn(chromosomeMiddleParts, fitness, POPULATION_SIZE-size(a)-size(b)-size(c)-size(e)), SWAP_RATE);
-        
-        chromosomeMiddleParts(:) = [a; b; c; d; e];
-    end
-    fprintf("iteration %2d. \n\tvalue: %.2f\n", iteration, fitnessPop(points, theBest));
+    e(:) = crosord(e, 0);
+    d = swapgen(seltourn(chromosomeMiddleParts, fitness, POPULATION_SIZE-size(a)-size(b)-size(c)-size(e)), SWAP_RATE);
+    
+    chromosomeMiddleParts(:) = [a; b; c; d; e];
 end
 
 function [] = drawPoints(points)
