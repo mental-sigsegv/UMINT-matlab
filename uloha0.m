@@ -44,6 +44,10 @@ function [] = find_minimum_0(x_current, d)
     hold off;
 end
 
+% ----------------- %
+% DEFINED FUNCTIONS %
+% ----------------- %
+
 function [] = draw_plot_0(x)
     plot(x, f_0(x), 'b');
 end
