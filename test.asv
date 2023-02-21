@@ -1,6 +1,0 @@
-POPULATION_SIZE = 100;
-NUM_OF_GENES = 10;
-SPACE = ones(2, NUM_OF_GENES).*[-500; 500];
-
-genrpop(POPULATION_SIZE, SPACE);
-schwefel()

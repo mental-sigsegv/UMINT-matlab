@@ -10,34 +10,24 @@ chromosomePermutePart = 2:19;
 
 SWAP_RATE = 0.15;
 
-% chromosomePermutePart = chromosomePermutePart(randperm(length(chromosomePermutePart)));
-% TESTING_CH = [1, chromosomePermutePart, 20]
-% chromosomePermutePart = swapgen(chromosomePermutePart, SWAP_RATE);
-% TESTING_CH2 = [1, chromosomePermutePart, 20]
-
-% return;
 
 drawPoints(points);
 drawNumbers(points);
 
-MAX_ITERATIONS = 50;
+MAX_ITERATIONS = 10;
 MAX_GENERATIONS = 300;
 POPULATION_SIZE = 150;
+
+fitnessPerGeneration = zeros(MAX_ITERATIONS, MAX_GENERATIONS);
+fitnessBestPath = 1:18;
+
 chromosomeMiddleParts = zeros(POPULATION_SIZE, 18);
 
 for i = 1:POPULATION_SIZE
     chromosomeMiddleParts(i,:) = [chromosomePermutePart(randperm(length(chromosomePermutePart)))];
 end
 
-
-% 
-% chromosomeMiddleParts
-% crossov(chromosomeMiddleParts, fitnessPop(points, chromosomeMiddleParts), 0)
-% return;
-
-% chromosome
-% T_POINTS = [0,0; 0,5; 5,5; 10,10;];
-% fitnessPop(T_POINTS, [[1,2,3,4]; [1,4,2,4]])
+fitnessBest = fitnessPop(points, chromosomePermutePart(1,:));
 
 for iteration = 1:MAX_ITERATIONS
     chromosomeMiddleParts = zeros(POPULATION_SIZE, 18);
@@ -47,8 +37,11 @@ for iteration = 1:MAX_ITERATIONS
     for generation = 1:MAX_GENERATIONS
         fitness = fitnessPop(points, chromosomeMiddleParts);
         theBest = selbest(chromosomeMiddleParts, fitness, 1);
-        
-        drawLineCH(points, theBest);
+        if fitnessPop(points, theBest) < fitnessBest
+            fitnessBest = fitnessPop(points, theBest);
+            fitnessBestPath = theBest;
+        end
+%         drawLineCH(points, theBest);
     %      pause(0.1);
         a = selbest(chromosomeMiddleParts, fitness, [3 3 3 2 2 1 1 1 1]);
         b = swapgen(selbest(chromosomeMiddleParts, fitness, ones(1, 10) * 2), SWAP_RATE);
@@ -64,9 +57,19 @@ for iteration = 1:MAX_ITERATIONS
         d = swapgen(seltourn(chromosomeMiddleParts, fitness, POPULATION_SIZE-size(a)-size(b)-size(c)-size(e)), SWAP_RATE);
         
         chromosomeMiddleParts(:) = [a; b; c; d; e];
+
+%         drawLineCH(points, theBest);
+%         pause(0.01);
     end
-    fprintf("iteration %2d. \n\tvalue: %.2f\n", iteration, fitnessPop(points, theBest));
+    fprintf("Iteration %2d.: \n\tvalue: %.2f\n", iteration, fitnessPop(points, theBest));
 end
+
+fitnessBestPath = [1, fitnessBestPath, 20];
+fitnessBestPathString = num2str(fitnessBestPath);
+fprintf("\nLenght of the shortest path: %.2f\n\tPath of line\n\t%s\n", fitnessBest, fitnessBestPathString);
+
+
+drawLineCH(points, fitnessBestPath);
 
 function [] = drawPoints(points)
     pointsX = points(:,1);
