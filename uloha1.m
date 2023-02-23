@@ -27,7 +27,7 @@ hold on;
 
 for iteration = 1:MAX_ITERATIONS
     pop = genrpop(POPULATION_SIZE, SPACE);
-    % color = rand(1, 3);  % for random colors
+    color = rand(1, 3);  % for random colors
 
     for generation = 1:MAX_GENERATIONS
         fitnessValues = schwefel(pop);
@@ -41,13 +41,13 @@ for iteration = 1:MAX_ITERATIONS
         popRandom = selrand(pop, fitnessValues, floor(POPULATION_SIZE/10));
 
         popSeltourn = seltourn(pop, fitnessValues, POPULATION_SIZE-size(popParents)-size(popChildMutated)-size(popRandom)-size(popSelsus));
-        popSeltourn(:) = mutx(popSeltourn, MUTATION_RATE, SPACE);
+        popSeltourn = mutx(popSeltourn, MUTATION_RATE, SPACE);
     
-        pop(:) = [popParents; popChildMutated; popSelsus; popRandom; popSeltourn];
+        pop = [popParents; popChildMutated; popSelsus; popRandom; popSeltourn];
         [minValue, minIndex] = min(fitnessValues);
         valuesPerGenerations(generation) = minValue;
     end % generations
-    plot(valuesPerGenerations, 'b');
+    plot(valuesPerGenerations, 'Color', color);
     fprintf("%2d. Iteration: %4.4f\n\tPopulation:", iteration, valuesPerGenerations(MAX_GENERATIONS-1));
     disp(pop(minIndex,:));
 end % iterations
