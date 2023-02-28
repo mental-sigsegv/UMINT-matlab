@@ -36,7 +36,7 @@ for iteration = 1:MAX_ITERATIONS
     for generation = 1:MAX_GENERATIONS
         
         fitnessValues = fitnessPop(POINTS, chromosome);
-        [minValue, minIndex] = min(fitnessValues);
+        minValue = min(fitnessValues);
         valuesPerGenerations(generation) = minValue;
         popTheBest = selbest(chromosome, fitnessValues, 1);
         
@@ -48,14 +48,14 @@ for iteration = 1:MAX_ITERATIONS
 
         popBest = selbest(chromosome, fitnessValues, [3 3 3 2 2 1 1 1 1]);
         popBestChanged = swapgen(selbest(chromosome, fitnessValues, ones(1, 10) * 2), SWAP_RATE);
-        popBestChanged(:) = swapgen(crosord(popBestChanged, 0), SWAP_RATE);
+        popBestChanged = swapgen(crosord(popBestChanged, 0), SWAP_RATE);
         
         popRand = swapgen(selrand(chromosome, fitnessValues, ones(1, 10)), SWAP_RATE);
-        popRandChanged(:) = swapgen(crosord(popRand, 0), SWAP_RATE);
+        popRandChanged = invord(crosord(popRand, 0), SWAP_RATE);
         
         popTourn = invord(seltourn(chromosome, fitnessValues, POPULATION_SIZE-size(popBest)-size(popBestChanged)-size(popRandChanged)), SWAP_RATE);
         
-        chromosome(:) = [popBest; popBestChanged; popRandChanged; popTourn];
+        chromosome = [popBest; popBestChanged; popRandChanged; popTourn];
     
     end
     figure(1)
