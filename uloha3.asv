@@ -4,13 +4,13 @@ close all;
 hold off;
 MAX_INVEST = 10;
 SPACE = ones(2, 5).*[0; MAX_INVEST];
-POP_SIZE = 100;
+POP_SIZE = 50;
 
 
-MAX_GENERATIONS = 1500;
-MAX_ITERATIONS = 50;
+MAX_GENERATIONS = 2000;
+MAX_ITERATIONS = 10;
 MUTATION_RATE = 0.8;
-AMPS = 10.0 * ones(1, 5);
+AMPS = 100.0 * ones(1, 5);
 axis([-1 MAX_GENERATIONS+1 4e5 8e5]);
 hold on;
 plotValues = 1:MAX_GENERATIONS;
@@ -23,9 +23,9 @@ for i = 1:MAX_ITERATIONS
     HIGHEST_INCOME = 0;
 
 for g = 1:MAX_GENERATIONS
-%     fitnessValues = financeFitnessDeathPenalty(pop);  %r
-%     fitnessValues = financeFitnessProportional(pop);  %b
-    fitnessValues = financeFitnessGradational(pop);  %g
+%     fitnessValues = financeFitnessDeathPenalty(pop);
+    fitnessValues = financeFitnessProportional(pop);
+%     fitnessValues = financeFitnessGradational(pop);
 
 
     [generationProfit, generationIndex] = min(fitnessValues);
@@ -34,15 +34,14 @@ for g = 1:MAX_GENERATIONS
     plotValues(g) = generationProfit;
 
    
-    popParents = selbest(pop, fitnessValues, [1 1 1 1 1 1 1 1 1 1]);
-    %popChild = crossov(popParents, 2, 0);
+    popParents = selbest(pop, fitnessValues, [1 1 1 1 1 1 1]);
     popChild = crosgrp(popParents, floor(POP_SIZE/5));
     popChildMutated = muta(popChild, MUTATION_RATE, AMPS, SPACE);
 
     popSelsus = selsus(pop, fitnessValues, floor(POP_SIZE/5));
     popSelsus = muta(popSelsus, fitnessValues, AMPS, SPACE);
 
-    popRandom = selrand(pop, fitnessValues, floor(POP_SIZE/20));
+    popRandom = selrand(pop, fitnessValues, floor(POP_SIZE/10));
     popRandom = muta(popRandom, fitnessValues, AMPS, SPACE);
 
     popSeltourn = seltourn(pop, fitnessValues, POP_SIZE-size(popParents)-size(popChildMutated)-size(popRandom)-size(popSelsus));
@@ -56,7 +55,7 @@ end
         ALL_BEST_GENE = generationPopulation;
     end
     disp(generationPopulation);
-    plot(plotValues, 'g');
+    plot(plotValues);
 end
 
 fprintf("\nBest income from all iterations: %6.2f\nBest investment combination:\n", ALL_BEST);
@@ -66,31 +65,32 @@ disp(ALL_BEST_GENE*1e6);
 
 function [Fit] = financeFitnessProportional(population)
     MAX_INVEST = 10;
-    penatlyCoef = 2;
+    penatlyCoef = 1;
+    penalty = 0;
     [popSize, geneSize] = size(population);
     Fit = zeros(1, popSize);
     for p = 1:popSize
-        penalty = 0;
-
         Fit(p) = -(0.04*population(p, 1)+0.07*population(p, 2)+0.11*population(p, 3)+0.06*population(p, 4)+0.05*population(p, 5));
 
-        if sum(population(p, :)) > MAX_INVEST
-            penalty = penalty + penatlyCoef*(sum(population(p, :)) - MAX_INVEST);
-        end
+       if sum(population(p, :)) > MAX_INVEST
+            penalty = penalty + sum(population(p, :));
+       end
 
-        if population(p, 1) + population(p, 2) > 2.5
-            penalty = penalty + penatlyCoef*(population(p, 1) + population(p, 2) - 2.5);
-        end
+       if (population(p, 1) + population(p, 2)) > 2.5
+            penalty = penalty + (population(p, 1) + population(p, 2));
+       end
 
-        if -population(p, 4) + population(p, 5) > 0
-            penalty = penalty + penatlyCoef*(-population(p, 4) + population(p, 5));
-        end
-         
-        if (0.5 * (-population(p, 1)-population(p, 2)+population(p, 3)+population(p, 4)-population(p, 5))) > 0
-            penalty = penalty + penatlyCoef*((0.5 * (-population(p, 1)-population(p, 2)+population(p, 3)+population(p, 4)-population(p, 5))));
-        end
+       if (-population(p, 4) + population(p, 5)) > 0
+            penalty = penalty + (-population(p, 4) + population(p, 5));
+       end
 
-        Fit(p) = Fit(p) + penalty;
+       if (0.5 * (-population(p, 1) - population(p, 2) + population(p, 3) + population(p, 4) - population(p, 5))) > 0
+            penalty = penalty + (0.5 * (-population(p, 1) - population(p, 2) + population(p, 3) + population(p, 4) - population(p, 5)));
+       end
+
+       if numOfPenalties > 0
+           Fit(p) = Fit(p) + penalty;
+       end
     end
 end
 
@@ -117,12 +117,11 @@ end
 
 function [Fit] = financeFitnessGradational(population)
     MAX_INVEST = 10;
-    
-    penaltyBase = 12.5;
+    numOfPenalties = 0;
+    penaltyBase = 1.55;
     [popSize, geneSize] = size(population);
     Fit = zeros(1, popSize);
     for p = 1:popSize
-       numOfPenalties = 0;
        Fit(p) = -(0.04*population(p, 1)+0.07*population(p, 2)+0.11*population(p, 3)+0.06*population(p, 4)+0.05*population(p, 5));
 
        if sum(population(p, :)) > MAX_INVEST
