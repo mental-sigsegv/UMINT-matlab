@@ -8,9 +8,9 @@ POP_SIZE = 100;
 
 
 MAX_GENERATIONS = 1500;
-MAX_ITERATIONS = 50;
-MUTATION_RATE = 0.8;
-AMPS = 10.0 * ones(1, 5);
+MAX_ITERATIONS = 5;
+MUTATION_RATE = 0.6;
+AMPS = 1.0 * ones(1, 5);
 axis([-1 MAX_GENERATIONS+1 4e5 8e5]);
 hold on;
 plotValues = 1:MAX_GENERATIONS;
@@ -24,8 +24,8 @@ for i = 1:MAX_ITERATIONS
 
 for g = 1:MAX_GENERATIONS
 %     fitnessValues = financeFitnessDeathPenalty(pop);  %r
-%     fitnessValues = financeFitnessProportional(pop);  %b
-    fitnessValues = financeFitnessGradational(pop);  %g
+    fitnessValues = financeFitnessProportional(pop);  %b
+%     fitnessValues = financeFitnessGradational(pop);  %g
 
 
     [generationProfit, generationIndex] = min(fitnessValues);
@@ -34,12 +34,12 @@ for g = 1:MAX_GENERATIONS
     plotValues(g) = generationProfit;
 
    
-    popParents = selbest(pop, fitnessValues, [1 1 1 1 1 1 1 1 1 1]);
+    popParents = selbest(pop, fitnessValues, [1 1 1 1 1 1 1 1]);
     %popChild = crossov(popParents, 2, 0);
-    popChild = crosgrp(popParents, floor(POP_SIZE/5));
+    popChild = crosgrp(popParents, floor(POP_SIZE/14));
     popChildMutated = muta(popChild, MUTATION_RATE, AMPS, SPACE);
 
-    popSelsus = selsus(pop, fitnessValues, floor(POP_SIZE/5));
+    popSelsus = selsus(pop, fitnessValues, floor(POP_SIZE/14));
     popSelsus = muta(popSelsus, fitnessValues, AMPS, SPACE);
 
     popRandom = selrand(pop, fitnessValues, floor(POP_SIZE/20));
@@ -56,7 +56,7 @@ end
         ALL_BEST_GENE = generationPopulation;
     end
     disp(generationPopulation);
-    plot(plotValues, 'g');
+    plot(plotValues, 'b');
 end
 
 fprintf("\nBest income from all iterations: %6.2f\nBest investment combination:\n", ALL_BEST);
@@ -118,7 +118,7 @@ end
 function [Fit] = financeFitnessGradational(population)
     MAX_INVEST = 10;
     
-    penaltyBase = 12.5;
+    penaltyBase = 25;
     [popSize, geneSize] = size(population);
     Fit = zeros(1, popSize);
     for p = 1:popSize
