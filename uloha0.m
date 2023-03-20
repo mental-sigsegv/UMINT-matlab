@@ -1,57 +1,50 @@
 clear;
 clc;
-% close all;
+close all;
 
-graph_steps = 0.1;
-search_delta = 0.25;
-x = -6:graph_steps:6;
-random_x = x(randi(length(x), 1));
-%  random_x = 0;
-%  random_x = 0.01;
-%  random_x = -0.01;
-%  random_x = -6;
-%  random_x = 6;
+graphStep = 0.1;
+searchDelta = 0.1;
+x = -6:graphStep:6;
+startingPoint = x(randi(length(x), 1));
 
-draw_plot_0(x);
+drawPlot(x);
+
 xlabel('x');
 ylabel('f(x_i)');
-find_minimum_0(random_x, search_delta);
 
-function [] = find_minimum_0(x_current, d)
+findMinimum(startingPoint, searchDelta);
+
+function [] = findMinimum(x, d)
     hold on;
-    scatter(x_current, f_0(x_current), "o", 'g', "+");
+    scatter(x, mathFunction(x), 'g', "+");
     
-    while (-6 <= x_current) && (x_current <= 6)
-        x_left = x_current - d;
-        x_right = x_current + d;
-        if (f_0(x_left) < f_0(x_current)) && (f_0(x_current) < f_0(x_right))
-            x_current = x_left;
-        elseif (f_0(x_left) > f_0(x_current)) && (f_0(x_current) > f_0(x_right))
-            x_current = x_right;
-        elseif (f_0(x_left) < f_0(x_current)) && (f_0(x_right) < f_0(x_current))
-            if f_0(x_left) <= f_0(x_right)
-                x_current = x_left;
+    while (-6 <= x) && (x <= 6)
+        x_left = x - d;
+        x_right = x + d;
+        if (mathFunction(x_left) < mathFunction(x)) && (mathFunction(x) < mathFunction(x_right))
+            x = x_left;
+        elseif (mathFunction(x_left) > mathFunction(x)) && (mathFunction(x) > mathFunction(x_right))
+            x = x_right;
+        elseif (mathFunction(x_left) < mathFunction(x)) && (mathFunction(x_right) < mathFunction(x))
+            if mathFunction(x_left) <= mathFunction(x_right)
+                x = x_left;
             else 
-                x_current = x_right;
+                x = x_right;
             end
         else
-            scatter(x_current, f_0(x_current), "r", "*");
+            scatter(x, mathFunction(x), "r", "*");
             break
         end
-        scatter(x_current, f_0(x_current), "g", "+");
+        scatter(x, mathFunction(x), "g", "+");
     end
-    fprintf("x: %.2f\ny: %.2f\n", x_current, f_0(x_current));
+    fprintf("vysledky\nx suradnica: %.2f\ny suradnica: %.2f\n", x, mathFunction(x));
     hold off;
 end
 
-% ----------------- %
-% DEFINED FUNCTIONS %
-% ----------------- %
-
-function [] = draw_plot_0(x)
-    plot(x, f_0(x), 'b');
+function [] = drawPlot(x)
+    plot(x, mathFunction(x), 'b');
 end
 
-function [y] = f_0(x)
+function [y] = mathFunction(x)
     y=0.2*x.^4+0.2*x.^3-4*x.^2+10;
 end
