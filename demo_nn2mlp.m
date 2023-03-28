@@ -5,8 +5,8 @@
 echo on
 % Príklad na klasifikáciu skupín A a B pomocou NS
 % data pre skupinu A
-xA =0.75 + 0.4*rand(1,10)-0.2;
-yA =0.3 + 0.4*rand(1,10)-0.2;
+xA =0.75 + 0.4*rand(1,10)-0.2
+yA =0.3 + 0.4*rand(1,10)-0.2
 
 % data pre skupinu B
 xB =0.4 + 0.4*rand(1,10)-0.2;
