@@ -54,7 +54,7 @@ y = net(X);
 
 classes = vec2ind(y);
 
-X2=rand(3,5);
+X2=rand(3,5)
 
 % simulacia vystupu NS
 y2 = net(X2);
@@ -65,8 +65,8 @@ colors = ["#ffa500", "black", "blue", "magenta", "green"];
 
 for i = 1:length(X2(1,:))
     color = colors(classes2(i));
-    plot3(X2(1,i), X2(2,i), X2(3,i), 's', 'MarkerSize', 10, 'MarkerEdgeColor', "red" , 'LineWidth',1);
-    text(X2(1,i)+0.05, X2(2,i), X2(3,i), int2str(classes2(i)), 'FontSize', 12, 'Color', 'black', 'HorizontalAlignment', 'center');
+    plot3(X2(1,i), X2(2,i), X2(3,i), 's', 'MarkerSize', 10, 'MarkerEdgeColor', color , 'LineWidth',1);
+    text(X2(1,i)+0.05, X2(2,i), X2(3,i), int2str(i), 'FontSize', 12, 'Color', 'black', 'HorizontalAlignment', 'center');
 end
 fprintf('Vzorka piatich bodov ma nasledovne priradene skupiny: ');
 disp(classes2);
