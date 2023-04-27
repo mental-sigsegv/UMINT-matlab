@@ -1,0 +1,73 @@
+[System]
+Name='Semafory'
+Type='mamdani'
+Version=2.0
+NumInputs=3
+NumOutputs=1
+NumRules=27
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='current_stop'
+Range=[0 30]
+NumMFs=3
+MF1='low':'trimf',[-12.5 0 7]
+MF2='medium':'trimf',[5 10 15]
+MF3='high':'trimf',[15 20 42.49]
+
+[Input2]
+Name='next_stop'
+Range=[0 30]
+NumMFs=3
+MF1='low':'trimf',[-12.5 0 7]
+MF2='medium':'trimf',[5 10 15]
+MF3='high':'trimf',[15 20 42.49]
+
+[Input3]
+Name='next_next_stop'
+Range=[0 30]
+NumMFs=3
+MF1='low':'trimf',[-12.5 0 7]
+MF2='medium':'trimf',[5 10 15]
+MF3='high':'trimf',[15 20 42.49]
+
+[Output1]
+Name='Interval'
+Range=[5 30]
+NumMFs=3
+MF1='short':'trapmf',[-4.5 5 10.52 11.41]
+MF2='medium':'trimf',[10.4957142857143 14.6857142857143 19.9801587301587]
+MF3='long':'trapmf',[14.74 18.14 30 31]
+
+[Rules]
+1 1 1, 1 (1) : 1
+1 1 2, 1 (1) : 1
+1 1 3, 1 (1) : 1
+1 2 1, 1 (1) : 1
+1 2 2, 1 (1) : 1
+1 2 3, 1 (1) : 1
+1 3 1, 1 (1) : 1
+1 3 2, 1 (1) : 1
+1 3 3, 1 (1) : 1
+2 1 1, 1 (1) : 1
+2 1 2, 2 (1) : 1
+2 1 3, 2 (1) : 1
+2 2 1, 1 (1) : 1
+2 2 2, 2 (1) : 1
+2 2 3, 1 (1) : 1
+2 3 1, 2 (1) : 1
+2 3 2, 2 (1) : 1
+2 3 3, 1 (1) : 1
+3 1 1, 2 (1) : 1
+3 1 2, 3 (1) : 1
+3 1 3, 2 (1) : 1
+3 2 1, 3 (1) : 1
+3 2 2, 2 (1) : 1
+3 2 3, 2 (1) : 1
+3 3 1, 2 (1) : 1
+3 3 2, 2 (1) : 1
+3 3 3, 1 (1) : 1

@@ -32,8 +32,8 @@ Interval = 8;
 
 
 %% Nacitanie fuzzy systemu
-  f=readfis('Semafory1.fis');
-% fuzzy(f); % zobrazenie fuzzy systemu
+  f=readfis('Semafory.fis');
+fuzzy(f); % zobrazenie fuzzy systemu
 
 %% Scenár - základný
 % cyklus A1 - A2 - A3
@@ -82,8 +82,7 @@ for cyk = 1:20 % hlavny cyklus
     % spocitanie aut z pruhov do cyklov
     
       [A1,A2,A3] = Ziskaj_poc_aut(pocet_aut_na_kriz);
-%       Interval = min(30, max(floor(A1/doba_prechodu*2.5), 5));
-Interval = floor(evalfis(f, [A1, A2, A3]));
+      Interval = min(30, max(floor(A1/doba_prechodu*2.5), 5));
 
        
     %% vypocet intervalu zelenej z fuzzy systemu
@@ -126,8 +125,7 @@ Interval = floor(evalfis(f, [A1, A2, A3]));
      % spocitanie aut z pruhov do cyklov
     
       [A1,A2,A3] = Ziskaj_poc_aut(pocet_aut_na_kriz);
-%        Interval = min(30, max(floor(A2/doba_prechodu*2.5*1.5), 5));
-Interval = floor(evalfis(f, [A2, A3, A1]));
+       Interval = min(30, max(floor(A2/doba_prechodu*2.5*1.5), 5));
     
        
     %% vypocet intervalu zelenej z fuzzy systemu
@@ -169,8 +167,7 @@ Interval = floor(evalfis(f, [A2, A3, A1]));
    % spocitanie aut z pruhov do cyklov
     
       [A1,A2,A3] = Ziskaj_poc_aut(pocet_aut_na_kriz);
-%        Interval = min(30, max(floor(A3/doba_prechodu*2.5), 5));
-Interval = floor(evalfis(f, [A3, A1, A2]));
+%        Interval = min(30, max(floor(A3/doba_prechodu*2.5), 5));\
 
     
        
